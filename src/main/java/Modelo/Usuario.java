@@ -43,8 +43,6 @@ public class Usuario {
         this.penalizacionHasta = penalizacionHasta;
     }
 
-
-
     public Integer getId() {
         return id;
     }
