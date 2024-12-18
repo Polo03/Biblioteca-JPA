@@ -30,6 +30,21 @@ public class Usuario {
     @Column(name = "penalizacionHasta")
     private LocalDate penalizacionHasta;
 
+    public Usuario() {
+        super();
+    }
+
+    public Usuario(String dni, String nombre, String email, String password, String tipo, LocalDate penalizacionHasta) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        this.tipo = tipo;
+        this.penalizacionHasta = penalizacionHasta;
+    }
+
+
+
     public Integer getId() {
         return id;
     }

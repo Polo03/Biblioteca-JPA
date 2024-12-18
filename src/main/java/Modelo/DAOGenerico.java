@@ -2,6 +2,7 @@ package Modelo;
 
 import jakarta.persistence.*;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
@@ -15,35 +16,60 @@ public class DAOGenerico<T> {
         this.clase = clase;
     }
 
-    //ADD
-    /*public void add(T object) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        tx.begin();
-        if(clase.getSimpleName().toLowerCase().equals("equipo")){
-            // Obtener los valores de los campos del objeto usando reflexion o getters
-            String nombreEquipo = (String) clase.getMethod("getNombre").invoke(object);
-            String estadioEquipo = (String) clase.getMethod("getEstadio").invoke(object);
-
-            Query query = em.createNativeQuery("INSERT INTO equipo (nombre, estadio) VALUES (?, ?)", Equipo.class);
-            query.setParameter(1, nombreEquipo);
-            query.setParameter(2, estadioEquipo);
-            query.executeUpdate();
-        }else if(clase.getSimpleName().toLowerCase().equals("jugador")){
-            // Obtener los valores de los campos del objeto usando reflexion o getters
-            String nombreEquipo = (String) clase.getMethod("getNombre").invoke(object);
-            Float estatura = (Float) clase.getMethod("getEstatura").invoke(object);
-            Float peso = (Float) clase.getMethod("getPeso").invoke(object);
-            Equipo idEquipo = (Equipo) clase.getMethod("getIdEquipo").invoke(object);
-
-            Query query = em.createNativeQuery("INSERT INTO jugador (nombre, estatura, peso, idEquipo) VALUES (?, ?, ?, ?)", Jugador.class);
-            query.setParameter(1, nombreEquipo);
-            query.setParameter(2, estatura);
-            query.setParameter(3, peso);
-            query.setParameter(4, idEquipo.getId());
-            query.executeUpdate();
+    public T crearObjeto(Object... argumentos) {
+        try {
+            for (Constructor<?> constructor : clase.getDeclaredConstructors()) {
+                if (constructor.getParameterCount() == argumentos.length) {
+                    return clase.cast(constructor.newInstance(argumentos));
+                }
+            }
+            throw new IllegalArgumentException("No se encontró un constructor con los argumentos proporcionados.");
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear instancia de " + clase.getSimpleName(), e);
         }
+    }
+    //ADD
+    public void add(T entity){
+        try {
+            tx.begin();
 
-        tx.commit();
-    }*/
+            // Inserción manual con JPQL
+            StringBuilder query = new StringBuilder("INSERT INTO ")
+                    .append(clase.getSimpleName())
+                    .append(" (");
+
+            // Obtener los nombres de los campos de la entidad
+            var fields = clase.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                fields[i].setAccessible(true);
+                query.append(fields[i].getName());
+                if (i < fields.length - 1) query.append(", ");
+            }
+
+            query.append(") VALUES (");
+            for (int i = 0; i < fields.length; i++) {
+                query.append(":").append(fields[i].getName());
+                if (i < fields.length - 1) query.append(", ");
+            }
+            query.append(")");
+
+            // Crear la consulta
+            var jpqlQuery = em.createQuery(query.toString());
+            for (var field : fields) {
+                field.setAccessible(true);
+                jpqlQuery.setParameter(field.getName(), field.get(entity));
+            }
+
+            // Ejecutar la consulta
+            jpqlQuery.executeUpdate();
+            tx.commit();
+
+            System.out.println("Entidad insertada manualmente: " + entity);
+        } catch (Exception e) {
+            tx.rollback();
+            throw new RuntimeException("Error al agregar la entidad manualmente: " + entity, e);
+        }
+    }
 
     //SELECT BY ID
     public T getById(int id){
