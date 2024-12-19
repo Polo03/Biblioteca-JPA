@@ -142,11 +142,8 @@ public class Main {
                             if(controladorPrestamo.getPrestamoById(idPrestamo)!=null){
                                 Prestamo p=controladorPrestamo.getPrestamoById(idPrestamo);
                                 controladorPrestamo.updatePrestamo(new Prestamo(p.getId(),p.getUsuario(),p.getEjemplar(),p.getFechaInicio(),LocalDate.parse(fechaDevolución)));
-                            }else{
+                            }else
                                 System.out.println("No existe el prestamo con ese id");
-                            }
-
-
                             break;
                         default:
                             System.out.println("No ha seleccionado una opcion valida.");
