@@ -26,8 +26,7 @@ public class Ejemplar {
         super();
     }
 
-    public Ejemplar(Integer id, Libro isbn, String estado) {
-        this.id = id;
+    public Ejemplar(Libro isbn, String estado) {
         this.isbn = isbn;
         this.estado = estado;
     }

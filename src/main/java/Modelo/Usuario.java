@@ -34,6 +34,16 @@ public class Usuario {
         super();
     }
 
+    public Usuario(Integer id, String dni, String nombre, String email, String password, String tipo, LocalDate penalizacionHasta) {
+        this.id = id;
+        this.dni = dni;
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        this.tipo = tipo;
+        this.penalizacionHasta = penalizacionHasta;
+    }
+
     public Usuario(String dni, String nombre, String email, String password, String tipo, LocalDate penalizacionHasta) {
         this.dni = dni;
         this.nombre = nombre;
@@ -109,6 +119,6 @@ public class Usuario {
                 ", password='" + password + '\'' +
                 ", tipo='" + tipo + '\'' +
                 ", penalizacionHasta=" + penalizacionHasta +
-                '}';
+                "}\n";
     }
 }
