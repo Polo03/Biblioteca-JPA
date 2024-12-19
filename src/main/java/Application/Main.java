@@ -117,6 +117,40 @@ public class Main {
                     }
                     break;
                 case 4:
+                    System.out.println("1 - Registrar préstamo");
+                    System.out.println("2 - Calcular fecha límite de devolución");
+                    System.out.println("3 - Registrar devolución de prestamo");
+                    int indicePrestamo=sc.nextInt();
+                    sc.nextLine();
+                    switch (indicePrestamo){
+                        case 1:
+                            System.out.print("Introduzca el id del ejemplar: ");
+                            int idEjemplar=sc.nextInt();
+                            if(controladorEjemplar.getEjemplarById(idEjemplar)!=null)
+                                controladorPrestamo.addPrestamo(new Prestamo(controladorUsuario.getUsuarioById(idUsuario),controladorEjemplar.getEjemplarById(idEjemplar),LocalDate.now(),null));
+                            else
+                                System.out.println("No existe el ejemplar con ese id");
+                            break;
+                        case 2:
+                            System.out.println("Su fecha límite de devolución es: "+LocalDate.now().getDayOfMonth()+15+"/"+LocalDate.now().getMonthValue()+"/"+LocalDate.now().getYear());
+                            break;
+                        case 3:
+                            System.out.println("Introduzca el id del prestamo a actualizar: ");
+                            int idPrestamo=sc.nextInt();
+                            System.out.print("Introduzca la fecha de devolución: ");
+                            String fechaDevolución=sc.nextLine();
+                            if(controladorPrestamo.getPrestamoById(idPrestamo)!=null){
+                                Prestamo p=controladorPrestamo.getPrestamoById(idPrestamo);
+                                controladorPrestamo.updatePrestamo(new Prestamo(p.getId(),p.getUsuario(),p.getEjemplar(),p.getFechaInicio(),LocalDate.parse(fechaDevolución)));
+                            }else{
+                                System.out.println("No existe el prestamo con ese id");
+                            }
+
+
+                            break;
+                        default:
+                            System.out.println("No ha seleccionado una opcion valida.");
+                    }
                     break;
                 case 5:
                     System.out.println("Ha salido de la consola");
