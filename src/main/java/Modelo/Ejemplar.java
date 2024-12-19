@@ -22,6 +22,16 @@ public class Ejemplar {
     @Column(name = "estado")
     private String estado;
 
+    public Ejemplar() {
+        super();
+    }
+
+    public Ejemplar(Integer id, Libro isbn, String estado) {
+        this.id = id;
+        this.isbn = isbn;
+        this.estado = estado;
+    }
+
     public Integer getId() {
         return id;
     }
